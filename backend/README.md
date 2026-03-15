@@ -7,6 +7,7 @@ API minima en FastAPI para exponer el motor Prolog.
 - GET /normas
 - GET /normas/{norma_id}
 - POST /verificaciones/medida
+- POST /consultas/natural
 
 ## Dependencias
 Instalar Python 3.11+ y luego:
@@ -50,6 +51,14 @@ Consultar una norma por id:
 
 ```bash
 curl http://127.0.0.1:8000/normas/norma_puerta_ancho_minimo
+```
+
+Consulta en lenguaje natural simplificado:
+
+```bash
+curl -X POST http://127.0.0.1:8000/consultas/natural \
+  -H "Content-Type: application/json" \
+  -d '{"consulta":"cual es el ancho minimo de puerta"}'
 ```
 
 ## Idea de integracion

@@ -76,3 +76,13 @@ def obtener_norma_por_id(norma_id: str) -> dict:
     )
 
     return _run_prolog_goal(goal)
+
+
+def consultar_lenguaje_natural(consulta: str) -> dict:
+    goal = (
+        f"['{API_BRIDGE_PATH.as_posix()}'], "
+        f"consultar_natural_json({_quote_atom(consulta)}), "
+        "halt."
+    )
+
+    return _run_prolog_goal(goal)

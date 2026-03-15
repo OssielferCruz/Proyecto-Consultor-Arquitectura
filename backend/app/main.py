@@ -1,7 +1,14 @@
 from fastapi import FastAPI, HTTPException
 
+from .schemas.natural_query import NaturalQueryRequest
 from .schemas.verification import VerificationRequest
-from .services.prolog_client import PrologExecutionError, listar_normas, obtener_norma_por_id, verificar_cumplimiento
+from .services.prolog_client import (
+    PrologExecutionError,
+    consultar_lenguaje_natural,
+    listar_normas,
+    obtener_norma_por_id,
+    verificar_cumplimiento,
+)
 
 app = FastAPI(
     title="API de Consultor de Normativas",
@@ -46,5 +53,15 @@ def verificar_medida(payload: VerificationRequest) -> dict:
         )
     except PrologExecutionError as error:
         raise HTTPException(status_code=500, detail=str(error)) from error
+
+    return resultado
+
+
+@app.post("/consultas/natural")
+def consulta_natural(payload: NaturalQueryRequest) -> dict:
+    try:
+        resultado = consultar_lenguaje_natural(payload.consulta)
+    except PrologExecutionError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
 
     return resultado
