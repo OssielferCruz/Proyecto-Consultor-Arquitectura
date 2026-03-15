@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# Node / React
+node_modules/
+dist/
+build/
+.npm/
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Coverage
+coverage/
+.coverage
+htmlcov/
+
+# Generated reports
+reports/*.pdf
+reports/*.html

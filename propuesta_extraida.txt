@@ -1,0 +1,138 @@
+Propuesta de Proyecto: Sistema Experto de Consulta y Verificación de
+Normativas de Construcción
+
+Descripción general del proyecto
+El proyecto consiste en desarrollar un sistema experto de consulta y verificación de
+normativas de arquitectura y construcción.
+El sistema utilizará Prolog como motor de inferencia para analizar reglas normativas y
+Python para la interfaz, procesamiento
+de consultas y gestión de datos.
+
+El objetivo es permitir que arquitectos o ingenieros puedan:
+- consultar normas de construcción rápidamente
+- verificar si un diseño cumple con la normativa
+- recibir explicaciones y sugerencias de corrección
+
+Arquitectura general esperada
+El sistema debe seguir una arquitectura modular:
+
+Interfaz de usuario
+    ↓
+Procesador de consultas (Python)
+    ↓
+Motor de inferencia (Prolog)
+    ↓
+Base de conocimiento de normativas
+
+Componentes principales:
+
+- interfaz de usuario
+- módulo de procesamiento de lenguaje natural simplificado
+- módulo de verificación normativa
+- base de conocimiento de normas
+- motor lógico en Prolog
+- sistema de generación de reportes
+
+Funcionalidades principales
+
+
+   1. Consulta de normativas
+
+       El sistema debe permitir consultar normas específicas de construcción como:
+       - ancho mínimo de una puerta
+       - altura mínima de una habitación
+   - ancho mínimo de pasillos
+   - pendiente máxima de rampas
+
+2. Verificación automática de cumplimiento
+
+   El sistema permitirá introducir parámetros de diseño (altura de habitación, ancho
+   de puerta, ancho de pasillo)
+   y verificará si cumplen con la normativa.
+
+3. Explicación del razonamiento
+
+   Cuando el sistema determine si algo cumple o no cumple, debe explicar la razón
+   mostrando:
+   - norma aplicada
+   - valor mínimo permitido
+   - valor introducido por el usuario
+
+4. Sugerencias de corrección
+
+   Cuando un diseño no cumpla la normativa, el sistema sugerirá cómo corregirlo.
+
+5. Procesamiento de consultas en lenguaje natural simplificado
+
+   El sistema permitirá consultas simples como:
+   - cuál es el ancho mínimo de una puerta
+   - cuál es la altura mínima de una habitación
+   El sistema interpretará palabras clave y generará consultas al motor lógico.
+
+6. Base de conocimiento externa
+
+   Las normas se almacenarán en archivos externos (CSV, JSON o Excel) y se cargarán
+   dinámicamente.
+   Cada norma incluirá:
+   - elemento
+   - propiedad
+   - tipo de restricción (mínimo o máximo)
+   - valor
+   - unidad
+
+7. Organización de normas
+
+   Las normas se clasificarán por categorías:
+   - dimensiones mínimas
+       - accesibilidad
+       - ventilación
+       - seguridad
+       - circulación
+
+   8. Generación de reporte técnico
+
+       Después de verificar un diseño, el sistema generará un reporte con:
+       - verificaciones realizadas
+       - cumplimiento o incumplimiento
+       - sugerencias de corrección
+
+   9. Interfaz de usuario
+
+       El sistema contará con una interfaz donde el usuario pueda:
+       - realizar consultas
+       - introducir datos de diseño
+       - ejecutar análisis de cumplimiento
+       - visualizar resultados
+
+   10. Actualización de normativas
+
+       Las normas podrán actualizarse modificando los archivos de datos sin cambiar el
+       código del sistema.
+
+Datos de entrada del sistema
+El sistema debe manejar datos relacionados con elementos arquitectónicos como:
+- habitaciones
+- puertas
+- pasillos
+- rampas
+- escaleras
+- ventanas
+
+Resultados esperados
+El sistema debe poder:
+- responder consultas sobre normativas
+- verificar cumplimiento de diseños
+- explicar decisiones tomadas
+- sugerir correcciones cuando sea necesario
+Tecnologías previstas
+Motor lógico: Prolog
+Lenguaje de integración: Python
+Posible framework web: Flask
+
+Objetivo final del proyecto
+Crear una herramienta funcional que permita consultar y verificar normativas de
+construcción
+mediante razonamiento lógico automatizado, simulando el comportamiento de un sistema
+experto
+aplicado a arquitectura e ingeniería.
+

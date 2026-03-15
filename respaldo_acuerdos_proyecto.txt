@@ -1,0 +1,111 @@
+RESPALDO DE ACUERDOS DEL PROYECTO
+Sistema experto de consulta y verificacion de normativas de construccion
+Fecha: 2026-03-15
+
+1) OBJETIVO GENERAL
+Desarrollar una aplicacion modular orientada a arquitectura/ingenieria que permita:
+- Consultar normativas de construccion.
+- Verificar cumplimiento de un diseno.
+- Explicar por que cumple o no cumple.
+- Sugerir correcciones cuando no cumple.
+
+2) PRINCIPIO CLAVE DEL CURSO
+El proyecto debe demostrar claramente el uso de Prolog.
+Regla principal:
+- La logica de negocio (inferencia normativa) vive en Prolog.
+- Python y React no deben decidir normas, solo orquestar y presentar resultados.
+
+3) ARQUITECTURA ACORDADA (RUTA PROFESIONAL MODULAR)
+Capas:
+1. Frontend (React, en espanol).
+2. API backend (Python/FastAPI).
+3. Motor de inferencia (SWI-Prolog).
+4. Fuente de normas (base de datos externa para escala + versionado).
+
+Flujo:
+- La UI envia datos de diseno y consultas a la API.
+- La API filtra normas relevantes en la base de datos.
+- La API transforma esas normas en hechos de trabajo para Prolog.
+- Prolog razona y devuelve: cumple/no cumple + explicacion + sugerencia.
+- La API retorna el resultado a la UI.
+
+4) TECNOLOGIAS Y HERRAMIENTAS ACORDADAS
+Motor logico:
+- SWI-Prolog.
+
+Backend/API:
+- Python 3.11+.
+- FastAPI (preferido para estructura profesional y documentacion automatica).
+
+Frontend:
+- React (interfaz web moderna).
+- Idioma de la interfaz y salidas: espanol.
+
+Datos:
+- Base de datos externa para grandes volumenes (recomendado: PostgreSQL).
+- Posibilidad de ingesta desde archivos CSV/JSON/Excel.
+
+5) POR QUE USAR BASE DE DATOS EXTERNA ADEMAS DE PROLOG
+Prolog sigue siendo el cerebro del razonamiento, pero la base externa ayuda en:
+- Escalabilidad de miles de normas.
+- Clasificacion y busqueda rapida por categoria/subcategoria.
+- Versionado y vigencia por fecha/jurisdiccion.
+- Mantenimiento y actualizaciones sin tocar codigo de inferencia.
+
+6) FUNCIONALIDADES PRIORIZADAS
+1. Consulta de normativas.
+2. Verificacion automatica de cumplimiento.
+3. Explicacion del razonamiento.
+4. Sugerencias de correccion.
+5. Procesamiento de consultas simples en lenguaje natural (por palabras clave/plantillas).
+6. Organizacion de normas por categorias.
+7. Generacion de reporte tecnico.
+8. Actualizacion de normas sin cambiar la logica.
+
+7) CATEGORIZACION DE NORMAS (ESCALABLE)
+Campos recomendados para identificar normas:
+- Categoria (dimensiones, accesibilidad, seguridad, ventilacion, circulacion).
+- Subcategoria (puertas, pasillos, rampas, escaleras, habitaciones, ventanas, etc.).
+- Jurisdiccion (pais/region/municipio).
+- Uso (vivienda/comercial/industrial).
+- Tipo de restriccion (minimo/maximo/rango).
+- Valor y unidad.
+- Version y vigencia (fecha inicio/fin).
+- Estado (activa/derogada/en revision).
+
+8) MVP DEFINIDO (PRIMERA VERSION FUNCIONAL)
+MVP = Producto Minimo Viable.
+Se busca una version pequena pero completa end-to-end.
+
+Alcance inicial sugerido:
+- 6 normas base (ejemplo: puerta, habitacion, pasillo, rampa, escalera, ventana).
+- Consulta, verificacion, explicacion y sugerencia funcionando de punta a punta.
+- UI web en React conectada a API Python y motor Prolog.
+
+9) EVIDENCIA ACADEMICA DE USO REAL DE PROLOG
+Para defensa del curso se debe poder mostrar:
+- Consultas directas en consola Prolog.
+- Misma consulta desde la UI/API con resultado consistente.
+- Trazabilidad por decision:
+	norma aplicada, valor esperado, valor recibido, conclusion.
+- Cambio de una norma y cambio inmediato del resultado sin tocar React/Python.
+
+10) CRITERIOS DE ACEPTACION DEL PROYECTO
+- Si se retira Prolog, el sistema no puede decidir cumplimiento.
+- La API no contiene reglas normativas codificadas con if/else de negocio.
+- Las respuestas son explicables y auditables.
+- El sistema soporta crecimiento de normas y clasificacion ordenada.
+
+11) DECISIONES YA CERRADAS
+- Ruta profesional modular: SI.
+- Frontend React: SI.
+- Salidas en espanol: SI.
+- Prolog dominante en la logica: SI.
+- Escalabilidad para gran cantidad de normas: SI.
+
+12) SIGUIENTE PASO RECOMENDADO
+Crear el esqueleto del proyecto con tres modulos conectados:
+- /frontend (React)
+- /backend (FastAPI)
+- /prolog (hechos, reglas, consultas)
+y dejar una primera verificacion de normativa funcionando end-to-end.
