@@ -9,18 +9,55 @@ test(consulta_norma_puerta) :-
     assertion(Valor =:= 0.90),
     assertion(Unidad == metros).
 
+test(consulta_norma_detallada_escalera) :-
+    once(consultar_norma_detallada(Id, Categoria, Subcategoria, escalera, ancho, Restriccion, Valor, Unidad, Jurisdiccion, Fuente)),
+    assertion(Id == norma_escalera_ancho_minimo),
+    assertion(Categoria == circulacion),
+    assertion(Subcategoria == escaleras),
+    assertion(Restriccion == minimo),
+    assertion(Valor =:= 1.00),
+    assertion(Unidad == metros),
+    assertion(Jurisdiccion == general),
+    assertion(Fuente == manual_base).
+
 test(verificacion_puerta_cumple) :-
     once(verificar_cumplimiento(puerta, ancho, 0.95, metros, Resultado, NormaId, Explicacion, Sugerencia)),
     assertion(Resultado == cumple),
     assertion(NormaId == norma_puerta_ancho_minimo),
-    assertion(Explicacion == explicacion(norma_puerta_ancho_minimo, minimo, 0.9, metros, 0.95, cumple)),
+    assertion(Explicacion == explicacion(
+        norma_id(norma_puerta_ancho_minimo),
+        categoria(accesibilidad),
+        subcategoria(puertas),
+        elemento(puerta),
+        propiedad(ancho),
+        restriccion(minimo),
+        limite(0.9),
+        unidad(metros),
+        jurisdiccion(general),
+        fuente(manual_base),
+        valor_ingresado(0.95),
+        resultado(cumple)
+    )),
     assertion(Sugerencia == sin_cambios).
 
 test(verificacion_rampa_incumple) :-
     once(verificar_cumplimiento(rampa, pendiente, 10.0, porcentaje, Resultado, NormaId, Explicacion, Sugerencia)),
     assertion(Resultado == incumple),
     assertion(NormaId == norma_rampa_pendiente_maxima),
-    assertion(Explicacion == explicacion(norma_rampa_pendiente_maxima, maximo, 8.0, porcentaje, 10.0, incumple)),
-    assertion(Sugerencia == sugerencia(reducir_hasta, 8.0, porcentaje)).
+    assertion(Explicacion == explicacion(
+        norma_id(norma_rampa_pendiente_maxima),
+        categoria(accesibilidad),
+        subcategoria(rampas),
+        elemento(rampa),
+        propiedad(pendiente),
+        restriccion(maximo),
+        limite(8.0),
+        unidad(porcentaje),
+        jurisdiccion(general),
+        fuente(manual_base),
+        valor_ingresado(10.0),
+        resultado(incumple)
+    )),
+    assertion(Sugerencia == sugerencia(reducir_hasta, 8.0, porcentaje, diferencia_necesaria(2.0))).
 
 :- end_tests(verificacion_base).

@@ -56,3 +56,25 @@ norma(norma_rampa_pendiente_maxima,
 	porcentaje,
 	general,
 	manual_base).
+
+norma(norma_escalera_ancho_minimo,
+	circulacion,
+	escaleras,
+	escalera,
+	ancho,
+	minimo,
+	1.00,
+	metros,
+	general,
+	manual_base).
+
+norma(norma_ventana_area_minima,
+	ventilacion,
+	ventanas,
+	ventana,
+	area,
+	minimo,
+	1.50,
+	metros_cuadrados,
+	general,
+	manual_base).
