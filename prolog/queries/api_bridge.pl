@@ -1,4 +1,10 @@
-:- module(api_bridge, [verificar_cumplimiento_json/4, listar_normas_json/0, consultar_normas_json/2, consultar_norma_por_id_json/1]).
+:- module(api_bridge, [
+    verificar_cumplimiento_json/4,
+    listar_normas_json/0,
+    consultar_normas_json/2,
+    consultar_norma_por_id_json/1,
+    consultar_natural_json/1
+]).
 
 :- use_module(library(http/json)).
 :- use_module('consultas').
@@ -78,6 +84,25 @@ consultar_norma_por_id_json(Id) :-
     json_write_dict(current_output, NormaDict),
     nl.
 
+consultar_natural_json(Texto) :-
+    (   interpretar_consulta_natural(Texto, Elemento, Propiedad)
+    ->  findall(NormaDict, norma_dict_filtrada(Elemento, Propiedad, NormaDict), Normas),
+        length(Normas, Total),
+        json_write_dict(current_output, _{
+            tipo: consulta_normativa,
+            consulta_original: Texto,
+            interpretacion: _{elemento: Elemento, propiedad: Propiedad},
+            items: Normas,
+            total: Total
+        })
+    ;   json_write_dict(current_output, _{
+            tipo: consulta_normativa,
+            consulta_original: Texto,
+            error: 'No se pudo interpretar la consulta. Prueba con frases como: ancho minimo de puerta.'
+        })
+    ),
+    nl.
+
 norma_dict_filtrada(Elemento, Propiedad, NormaDict) :-
     consultar_norma_detallada(Id, Categoria, Subcategoria, Elemento, Propiedad, Restriccion, Valor, Unidad, Jurisdiccion, Fuente),
     norma_to_dict(Id, Categoria, Subcategoria, Elemento, Propiedad, Restriccion, Valor, Unidad, Jurisdiccion, Fuente, NormaDict).
@@ -100,3 +125,23 @@ norma_to_dict(Id, Categoria, Subcategoria, Elemento, Propiedad, Restriccion, Val
         fuente: Fuente
     }
 ).
+
+interpretar_consulta_natural(Texto, Elemento, Propiedad) :-
+    downcase_atom(Texto, Normalizado),
+    detectar_elemento(Normalizado, Elemento),
+    detectar_propiedad(Normalizado, Propiedad).
+
+detectar_elemento(Texto, puerta) :- contiene_alguno(Texto, [puerta, puertas]), !.
+detectar_elemento(Texto, habitacion) :- contiene_alguno(Texto, [habitacion, habitaciones, cuarto, cuartos]), !.
+detectar_elemento(Texto, pasillo) :- contiene_alguno(Texto, [pasillo, pasillos]), !.
+detectar_elemento(Texto, rampa) :- contiene_alguno(Texto, [rampa, rampas]), !.
+detectar_elemento(Texto, escalera) :- contiene_alguno(Texto, [escalera, escaleras]), !.
+detectar_elemento(Texto, ventana) :- contiene_alguno(Texto, [ventana, ventanas]), !.
+
+detectar_propiedad(Texto, ancho) :- contiene_alguno(Texto, [ancho, anchura]), !.
+detectar_propiedad(Texto, altura) :- contiene_alguno(Texto, [altura, alto]), !.
+detectar_propiedad(Texto, pendiente) :- contiene_alguno(Texto, [pendiente, inclinacion]), !.
+detectar_propiedad(Texto, area) :- contiene_alguno(Texto, [area, superficie]), !.
+
+contiene_alguno(Texto, [Termino | _]) :- sub_atom(Texto, _, _, _, Termino), !.
+contiene_alguno(Texto, [_ | Resto]) :- contiene_alguno(Texto, Resto).
