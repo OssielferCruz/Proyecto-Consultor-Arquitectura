@@ -9,10 +9,13 @@ Este documento define como trabajar el proyecto de forma modular, con cambios fu
 
 ## 2. Estructura de ramas recomendada
 - main: codigo estable y listo para demo/entrega.
-- develop: integracion de funcionalidades ya revisadas.
-- feature/*: trabajo de una funcionalidad concreta.
-- fix/*: correcciones puntuales de errores.
-- docs/*: cambios de documentacion.
+- feature/*: trabajo temporal de una funcionalidad concreta.
+- fix/*: trabajo temporal para correcciones puntuales.
+- docs/*: trabajo temporal para cambios de documentacion importantes.
+
+Nota para este proyecto:
+- No se usara develop como flujo principal.
+- Si develop existe en remoto, se puede ignorar o eliminar mas adelante.
 
 Ejemplos:
 - feature/verificacion-rampas
@@ -30,6 +33,22 @@ Crea una rama nueva cuando:
 No hace falta rama nueva para:
 - Cambio pequeno de typo local que no afecta logica.
 - Ajuste rapido de documentacion menor.
+
+Regla practica:
+- Si el cambio afecta Prolog, API o UI de forma real, crea rama.
+- Si el cambio toma mas de unos minutos o quieres poder revertirlo con claridad, crea rama.
+- Si el cambio es minimo y estas trabajando solo, puedes hacerlo directo en main.
+
+## 3.1. Cuando borrar una rama
+Borra una rama temporal cuando:
+- Ya fue fusionada en main.
+- Su objetivo ya quedo integrado.
+- No la vas a seguir usando para ese cambio puntual.
+
+No borres una rama si:
+- Todavia no haces merge.
+- Aun la estas probando.
+- La vas a usar para abrir o actualizar un Pull Request.
 
 ## 4. Regla simple de commits
 Haz commit cuando cierres una unidad de trabajo pequena y verificable.
@@ -59,15 +78,26 @@ Ejemplos:
 - docs: agregar guia de exposicion academica
 
 ## 6. Flujo de trabajo diario
-1. Actualizar rama base.
-2. Crear rama feature o fix.
-3. Implementar cambio pequeno.
-4. Probar localmente.
-5. Commit con mensaje claro.
-6. Push de la rama.
-7. Pull Request hacia develop.
-8. Revisar y luego fusionar.
-9. Pasar a main solo lo estable.
+1. Ir a main.
+2. Actualizar main.
+3. Crear rama feature, fix o docs.
+4. Implementar cambio pequeno.
+5. Probar localmente.
+6. Commit con mensaje claro.
+7. Push de la rama.
+8. Abrir Pull Request hacia main o hacer merge si trabajas solo.
+9. Borrar la rama temporal cuando ya este integrada.
+
+Ejemplo simple:
+1. git checkout main
+2. git pull
+3. git checkout -b feature/base-prolog
+4. trabajar
+5. git add .
+6. git commit -m "feat(prolog): agregar base inicial de reglas"
+7. git push -u origin feature/base-prolog
+8. merge a main
+9. borrar feature/base-prolog
 
 ## 7. Politica para cambios de requerimientos
 Cuando cambie un requerimiento:
@@ -101,16 +131,18 @@ Si aun no hay repo Git local:
 5. git remote add origin URL_DEL_REPO
 6. git branch -M main
 7. git push -u origin main
-8. git checkout -b develop
-9. git push -u origin develop
 
 Para cada funcionalidad nueva:
-1. git checkout develop
+1. git checkout main
 2. git pull
 3. git checkout -b feature/nombre-corto
 4. trabajar y commitear
 5. git push -u origin feature/nombre-corto
-6. abrir Pull Request a develop
+6. abrir Pull Request a main
+
+Para borrar una rama despues del merge:
+1. git branch -d feature/nombre-corto
+2. git push origin --delete feature/nombre-corto
 
 ## 10. Recomendacion para tu caso academico
 - Mantener Prolog como fuente de verdad de la logica.
@@ -122,3 +154,10 @@ Para cada funcionalidad nueva:
 - feature/api-fastapi-integracion-prolog
 - feature/ui-react-consultas-verificacion
 - docs/arquitectura-y-defensa-prolog
+
+## 12. Resumen corto para no confundirse
+- main es tu version estable.
+- feature/* sirve para desarrollar una tarea puntual.
+- fix/* sirve para corregir algo puntual.
+- cuando la tarea entra a main, la rama temporal se borra.
+- si mas adelante hay otro cambio, se crea otra rama nueva.
