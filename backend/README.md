@@ -4,6 +4,8 @@ API minima en FastAPI para exponer el motor Prolog.
 
 ## Endpoints iniciales
 - GET /health
+- GET /normas
+- GET /normas/{norma_id}
 - POST /verificaciones/medida
 
 ## Dependencias
@@ -28,6 +30,26 @@ uvicorn backend.app.main:app --reload
   "valor": 0.95,
   "unidad": "metros"
 }
+```
+
+## Ejemplos de consulta
+
+Obtener todas las normas:
+
+```bash
+curl http://127.0.0.1:8000/normas
+```
+
+Filtrar por elemento y propiedad:
+
+```bash
+curl "http://127.0.0.1:8000/normas?elemento=puerta&propiedad=ancho"
+```
+
+Consultar una norma por id:
+
+```bash
+curl http://127.0.0.1:8000/normas/norma_puerta_ancho_minimo
 ```
 
 ## Idea de integracion

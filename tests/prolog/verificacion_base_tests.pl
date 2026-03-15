@@ -20,6 +20,18 @@ test(consulta_norma_detallada_escalera) :-
     assertion(Jurisdiccion == general),
     assertion(Fuente == manual_base).
 
+test(consulta_norma_por_id_rampa) :-
+    once(consultar_norma_por_id(norma_rampa_pendiente_maxima, Categoria, Subcategoria, Elemento, Propiedad, Restriccion, Valor, Unidad, Jurisdiccion, Fuente)),
+    assertion(Categoria == accesibilidad),
+    assertion(Subcategoria == rampas),
+    assertion(Elemento == rampa),
+    assertion(Propiedad == pendiente),
+    assertion(Restriccion == maximo),
+    assertion(Valor =:= 8.00),
+    assertion(Unidad == porcentaje),
+    assertion(Jurisdiccion == general),
+    assertion(Fuente == manual_base).
+
 test(verificacion_puerta_cumple) :-
     once(verificar_cumplimiento(puerta, ancho, 0.95, metros, Resultado, NormaId, Explicacion, Sugerencia)),
     assertion(Resultado == cumple),
