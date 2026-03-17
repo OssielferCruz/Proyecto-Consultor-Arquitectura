@@ -81,6 +81,27 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.quick-actions span {
+  font-weight: 700;
+}
+
+button.ghost {
+  color: var(--accent);
+  background: #ecfeff;
+  border: 1px solid #99f6e4;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
 .result {
   background: var(--accent-soft);
   border-radius: 10px;
@@ -107,5 +128,29 @@ button:disabled {
   border-radius: 10px;
   padding: 12px;
   overflow-x: auto;
+  font-size: 13px;
+}
+
+.history-block {
+  margin-top: 12px;
+}
+
+.history-block h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-item {
+  color: #0f172a;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 999px;
+  padding: 6px 10px;
   font-size: 13px;
 }

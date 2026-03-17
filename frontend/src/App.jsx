@@ -42,6 +42,7 @@ function formatearVerificacion(data) {
 
 function App() {
   const [consulta, setConsulta] = useState('cual es el ancho minimo de puerta')
+  const [historialConsultas, setHistorialConsultas] = useState([])
   const [respuestaNatural, setRespuestaNatural] = useState('')
   const [detalleNatural, setDetalleNatural] = useState(null)
   const [cargandoNatural, setCargandoNatural] = useState(false)
@@ -53,6 +54,16 @@ function App() {
   const [resultadoVerificacion, setResultadoVerificacion] = useState(null)
   const [mensajeVerificacion, setMensajeVerificacion] = useState('')
   const [cargandoVerificacion, setCargandoVerificacion] = useState(false)
+
+  const registrarConsulta = (textoConsulta) => {
+    const normalizada = textoConsulta.trim()
+    if (!normalizada) return
+
+    setHistorialConsultas((previo) => {
+      const sinDuplicados = previo.filter((item) => item !== normalizada)
+      return [normalizada, ...sinDuplicados].slice(0, 5)
+    })
+  }
 
   const consultarNatural = async (event) => {
     event.preventDefault()
@@ -75,6 +86,7 @@ function App() {
 
       if (data.error) {
         setRespuestaNatural(data.error)
+        registrarConsulta(consulta)
         return
       }
 
@@ -82,8 +94,10 @@ function App() {
       if (norma) {
         setRespuestaNatural(formatearNormaComoRespuesta(norma))
         setDetalleNatural(norma)
+        registrarConsulta(consulta)
       } else {
         setRespuestaNatural('No se encontraron normas para la consulta ingresada.')
+        registrarConsulta(consulta)
       }
     } catch (error) {
       setRespuestaNatural(error.message)
@@ -135,6 +149,18 @@ function App() {
 
       <section className="card">
         <h2>Consulta en lenguaje natural</h2>
+        <div className="quick-actions">
+          <span>Ejemplos:</span>
+          <button type="button" className="ghost" onClick={() => setConsulta('cual es el ancho minimo de puerta')}>
+            ancho minimo de puerta
+          </button>
+          <button type="button" className="ghost" onClick={() => setConsulta('cual es la altura minima de habitacion')}>
+            altura minima de habitacion
+          </button>
+          <button type="button" className="ghost" onClick={() => setConsulta('cual es la pendiente maxima de rampa')}>
+            pendiente maxima de rampa
+          </button>
+        </div>
         <form onSubmit={consultarNatural} className="form-grid">
           <label>
             Pregunta
@@ -150,6 +176,18 @@ function App() {
             <summary>Ver detalle tecnico</summary>
             <pre className="detail">{JSON.stringify(detalleNatural, null, 2)}</pre>
           </details>
+        ) : null}
+        {historialConsultas.length > 0 ? (
+          <div className="history-block">
+            <h3>Consultas recientes</h3>
+            <div className="history-list">
+              {historialConsultas.map((item) => (
+                <button key={item} type="button" className="history-item" onClick={() => setConsulta(item)}>
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
         ) : null}
       </section>
 
