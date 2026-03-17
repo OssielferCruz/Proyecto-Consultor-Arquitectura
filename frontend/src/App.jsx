@@ -54,6 +54,63 @@ function App() {
   const [resultadoVerificacion, setResultadoVerificacion] = useState(null)
   const [mensajeVerificacion, setMensajeVerificacion] = useState('')
   const [cargandoVerificacion, setCargandoVerificacion] = useState(false)
+  const [mensajeReporte, setMensajeReporte] = useState('')
+
+  const construirReporte = () => {
+    const lineas = []
+    const fecha = new Date().toLocaleString('es-MX')
+
+    lineas.push('REPORTE TECNICO - CONSULTOR DE NORMATIVAS')
+    lineas.push(`Fecha: ${fecha}`)
+    lineas.push('')
+
+    if (consulta.trim()) {
+      lineas.push('Consulta natural')
+      lineas.push(`- Pregunta: ${consulta}`)
+      lineas.push(`- Respuesta: ${respuestaNatural || 'Sin respuesta registrada.'}`)
+      if (detalleNatural) {
+        lineas.push(`- Norma encontrada: ${detalleNatural.id}`)
+        lineas.push(`- Restriccion: ${detalleNatural.restriccion} ${detalleNatural.valor} ${detalleNatural.unidad}`)
+      }
+      lineas.push('')
+    }
+
+    lineas.push('Verificacion de medida')
+    lineas.push(`- Elemento: ${elemento}`)
+    lineas.push(`- Propiedad: ${propiedad}`)
+    lineas.push(`- Valor ingresado: ${valor} ${unidad}`)
+    lineas.push(`- Resultado: ${mensajeVerificacion || 'Sin verificacion ejecutada.'}`)
+
+    if (resultadoVerificacion?.explicacion) {
+      lineas.push(`- Norma aplicada: ${resultadoVerificacion.explicacion.norma_id}`)
+    }
+
+    return lineas.join('\n')
+  }
+
+  const copiarReporte = async () => {
+    const reporte = construirReporte()
+    try {
+      await navigator.clipboard.writeText(reporte)
+      setMensajeReporte('Reporte copiado al portapapeles.')
+    } catch {
+      setMensajeReporte('No se pudo copiar el reporte automaticamente.')
+    }
+  }
+
+  const descargarReporte = () => {
+    const reporte = construirReporte()
+    const blob = new Blob([reporte], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const enlace = document.createElement('a')
+    enlace.href = url
+    enlace.download = 'reporte_normativas.txt'
+    document.body.appendChild(enlace)
+    enlace.click()
+    document.body.removeChild(enlace)
+    URL.revokeObjectURL(url)
+    setMensajeReporte('Reporte descargado como archivo .txt.')
+  }
 
   const registrarConsulta = (textoConsulta) => {
     const normalizada = textoConsulta.trim()
@@ -221,6 +278,20 @@ function App() {
             <pre className="detail">{JSON.stringify(resultadoVerificacion, null, 2)}</pre>
           </details>
         ) : null}
+      </section>
+
+      <section className="card">
+        <h2>Modo reporte</h2>
+        <p>Genera un resumen de la consulta y la verificacion para compartir evidencia tecnica.</p>
+        <div className="report-actions">
+          <button type="button" onClick={copiarReporte}>Copiar reporte</button>
+          <button type="button" className="secondary" onClick={descargarReporte}>Descargar .txt</button>
+        </div>
+        {mensajeReporte ? <p className="result">{mensajeReporte}</p> : null}
+        <details className="detail-block">
+          <summary>Vista previa del reporte</summary>
+          <pre className="detail">{construirReporte()}</pre>
+        </details>
       </section>
     </main>
   )
