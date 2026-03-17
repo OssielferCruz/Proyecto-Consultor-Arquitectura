@@ -82,6 +82,15 @@ input {
   font-size: 14px;
 }
 
+select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  background: #ffffff;
+}
+
 button {
   width: fit-content;
   border: none;
@@ -182,4 +191,51 @@ button.ghost {
   gap: 10px;
   flex-wrap: wrap;
   margin-top: 10px;
+}
+
+.catalog-toolbar {
+  margin-top: 10px;
+}
+
+.catalog-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.catalog-actions span {
+  font-weight: 700;
+  color: #334155;
+}
+
+.catalog-grid {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.norma-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  background: #f8fafc;
+  display: grid;
+  gap: 8px;
+}
+
+.norma-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.norma-card p {
+  margin: 0;
+}
+
+.norma-card small {
+  color: #475569;
 }

@@ -56,6 +56,13 @@ function App() {
   const [mensajeVerificacion, setMensajeVerificacion] = useState('')
   const [cargandoVerificacion, setCargandoVerificacion] = useState(false)
   const [mensajeReporte, setMensajeReporte] = useState('')
+  const [normasCatalogo, setNormasCatalogo] = useState([])
+  const [cargandoCatalogo, setCargandoCatalogo] = useState(false)
+  const [errorCatalogo, setErrorCatalogo] = useState('')
+  const [filtroTexto, setFiltroTexto] = useState('')
+  const [filtroElemento, setFiltroElemento] = useState('todos')
+  const [filtroPropiedad, setFiltroPropiedad] = useState('todos')
+  const [filtroRestriccion, setFiltroRestriccion] = useState('todos')
 
   useEffect(() => {
     const guardado = localStorage.getItem('historial_consultas_normativas')
@@ -74,6 +81,63 @@ function App() {
   useEffect(() => {
     localStorage.setItem('historial_consultas_normativas', JSON.stringify(historialConsultas))
   }, [historialConsultas])
+
+  const cargarCatalogo = async () => {
+    setCargandoCatalogo(true)
+    setErrorCatalogo('')
+
+    try {
+      const response = await fetch(`${API_BASE}/normas`)
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.detail || 'No se pudo cargar el catalogo de normas')
+      }
+
+      setNormasCatalogo(Array.isArray(data.items) ? data.items : [])
+    } catch (error) {
+      setErrorCatalogo(error.message)
+      setNormasCatalogo([])
+    } finally {
+      setCargandoCatalogo(false)
+    }
+  }
+
+  useEffect(() => {
+    cargarCatalogo()
+  }, [])
+
+  const opcionesElemento = [...new Set(normasCatalogo.map((item) => item.elemento))].sort()
+  const opcionesPropiedad = [...new Set(normasCatalogo.map((item) => item.propiedad))].sort()
+  const opcionesRestriccion = [...new Set(normasCatalogo.map((item) => item.restriccion))].sort()
+
+  const normasFiltradas = normasCatalogo.filter((norma) => {
+    const cumpleElemento = filtroElemento === 'todos' || norma.elemento === filtroElemento
+    const cumplePropiedad = filtroPropiedad === 'todos' || norma.propiedad === filtroPropiedad
+    const cumpleRestriccion = filtroRestriccion === 'todos' || norma.restriccion === filtroRestriccion
+
+    const textoBusqueda = filtroTexto.trim().toLowerCase()
+    if (!textoBusqueda) {
+      return cumpleElemento && cumplePropiedad && cumpleRestriccion
+    }
+
+    const textoNorma = [
+      norma.id,
+      norma.categoria,
+      norma.subcategoria,
+      norma.elemento,
+      norma.propiedad,
+      norma.restriccion,
+      String(norma.valor),
+      norma.unidad,
+      norma.jurisdiccion,
+      norma.fuente,
+    ]
+      .join(' ')
+      .toLowerCase()
+
+    return cumpleElemento && cumplePropiedad && cumpleRestriccion && textoNorma.includes(textoBusqueda)
+  })
 
   const construirReporte = () => {
     const lineas = []
@@ -305,6 +369,84 @@ function App() {
             <summary>Ver detalle tecnico</summary>
             <pre className="detail">{JSON.stringify(resultadoVerificacion, null, 2)}</pre>
           </details>
+        ) : null}
+      </section>
+
+      <section className="card">
+        <h2>Catalogo de normas</h2>
+        <p>Explora todas las normas disponibles y filtra por campos clave.</p>
+
+        <div className="catalog-toolbar form-grid two-columns">
+          <label>
+            Buscar texto
+            <input
+              value={filtroTexto}
+              onChange={(event) => setFiltroTexto(event.target.value)}
+              placeholder="id, elemento, propiedad, fuente..."
+            />
+          </label>
+          <label>
+            Elemento
+            <select value={filtroElemento} onChange={(event) => setFiltroElemento(event.target.value)}>
+              <option value="todos">todos</option>
+              {opcionesElemento.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Propiedad
+            <select value={filtroPropiedad} onChange={(event) => setFiltroPropiedad(event.target.value)}>
+              <option value="todos">todos</option>
+              {opcionesPropiedad.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Restriccion
+            <select value={filtroRestriccion} onChange={(event) => setFiltroRestriccion(event.target.value)}>
+              <option value="todos">todos</option>
+              {opcionesRestriccion.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div className="catalog-actions">
+          <button type="button" className="secondary" onClick={cargarCatalogo} disabled={cargandoCatalogo}>
+            {cargandoCatalogo ? 'Actualizando catalogo...' : 'Actualizar catalogo'}
+          </button>
+          <span>Total visible: {normasFiltradas.length}</span>
+        </div>
+
+        {errorCatalogo ? <p className="result">{errorCatalogo}</p> : null}
+
+        <div className="catalog-grid">
+          {normasFiltradas.map((norma) => (
+            <article key={norma.id} className="norma-card">
+              <header>
+                <strong>{norma.id}</strong>
+                <span>{norma.categoria}</span>
+              </header>
+              <p>
+                {norma.propiedad} {norma.restriccion} de {norma.elemento}: <strong>{norma.valor} {norma.unidad}</strong>
+              </p>
+              <small>{norma.subcategoria} | {norma.jurisdiccion}</small>
+              {modoTecnico ? <small>Fuente: {norma.fuente}</small> : null}
+            </article>
+          ))}
+        </div>
+
+        {!cargandoCatalogo && normasFiltradas.length === 0 ? (
+          <p className="result">No hay normas que coincidan con los filtros actuales.</p>
         ) : null}
       </section>
 
