@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const API_BASE = 'http://127.0.0.1:8000'
 
@@ -41,6 +41,7 @@ function formatearVerificacion(data) {
 }
 
 function App() {
+  const [modoTecnico, setModoTecnico] = useState(false)
   const [consulta, setConsulta] = useState('cual es el ancho minimo de puerta')
   const [historialConsultas, setHistorialConsultas] = useState([])
   const [respuestaNatural, setRespuestaNatural] = useState('')
@@ -55,6 +56,24 @@ function App() {
   const [mensajeVerificacion, setMensajeVerificacion] = useState('')
   const [cargandoVerificacion, setCargandoVerificacion] = useState(false)
   const [mensajeReporte, setMensajeReporte] = useState('')
+
+  useEffect(() => {
+    const guardado = localStorage.getItem('historial_consultas_normativas')
+    if (!guardado) return
+
+    try {
+      const parsed = JSON.parse(guardado)
+      if (Array.isArray(parsed)) {
+        setHistorialConsultas(parsed.slice(0, 5))
+      }
+    } catch {
+      // Si el contenido guardado esta corrupto se ignora y continua la app.
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('historial_consultas_normativas', JSON.stringify(historialConsultas))
+  }, [historialConsultas])
 
   const construirReporte = () => {
     const lineas = []
@@ -202,6 +221,15 @@ function App() {
       <section className="card hero">
         <h1>Consultor de Normativas</h1>
         <p>Interfaz inicial para consultar normas y verificar medidas usando FastAPI + Prolog.</p>
+        <div className="mode-toggle">
+          <span>Modo de visualizacion:</span>
+          <button type="button" className={modoTecnico ? 'ghost' : ''} onClick={() => setModoTecnico(false)}>
+            Usuario
+          </button>
+          <button type="button" className={modoTecnico ? '' : 'ghost'} onClick={() => setModoTecnico(true)}>
+            Tecnico
+          </button>
+        </div>
       </section>
 
       <section className="card">
@@ -228,7 +256,7 @@ function App() {
           </button>
         </form>
         {respuestaNatural ? <p className="result">{respuestaNatural}</p> : null}
-        {detalleNatural ? (
+        {modoTecnico && detalleNatural ? (
           <details className="detail-block">
             <summary>Ver detalle tecnico</summary>
             <pre className="detail">{JSON.stringify(detalleNatural, null, 2)}</pre>
@@ -272,7 +300,7 @@ function App() {
           </button>
         </form>
         {mensajeVerificacion ? <p className="result">{mensajeVerificacion}</p> : null}
-        {resultadoVerificacion ? (
+        {modoTecnico && resultadoVerificacion ? (
           <details className="detail-block">
             <summary>Ver detalle tecnico</summary>
             <pre className="detail">{JSON.stringify(resultadoVerificacion, null, 2)}</pre>
@@ -288,10 +316,12 @@ function App() {
           <button type="button" className="secondary" onClick={descargarReporte}>Descargar .txt</button>
         </div>
         {mensajeReporte ? <p className="result">{mensajeReporte}</p> : null}
-        <details className="detail-block">
-          <summary>Vista previa del reporte</summary>
-          <pre className="detail">{construirReporte()}</pre>
-        </details>
+        {modoTecnico ? (
+          <details className="detail-block">
+            <summary>Vista previa del reporte</summary>
+            <pre className="detail">{construirReporte()}</pre>
+          </details>
+        ) : null}
       </section>
     </main>
   )
