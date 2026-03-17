@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from .schemas.natural_query import NaturalQueryRequest
 from .schemas.verification import VerificationRequest
@@ -14,6 +15,17 @@ app = FastAPI(
     title="API de Consultor de Normativas",
     version="0.1.0",
     description="API inicial para integrar FastAPI con el motor Prolog del proyecto.",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+    ],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
 )
 
 
