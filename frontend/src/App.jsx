@@ -2,6 +2,44 @@ import { useState } from 'react'
 
 const API_BASE = 'http://127.0.0.1:8000'
 
+function capitalizar(texto) {
+  if (!texto) return ''
+  return texto.charAt(0).toUpperCase() + texto.slice(1)
+}
+
+function textoRestriccion(restriccion) {
+  if (restriccion === 'minimo') return 'minimo'
+  if (restriccion === 'maximo') return 'maximo'
+  return restriccion
+}
+
+function formatearNormaComoRespuesta(norma) {
+  if (!norma) return 'No se encontraron normas para la consulta ingresada.'
+  return `La ${norma.propiedad} ${textoRestriccion(norma.restriccion)} de ${norma.elemento} es ${norma.valor} ${norma.unidad}.`
+}
+
+function formatearVerificacion(data) {
+  if (!data || data.error) return data?.error || 'No se pudo verificar la medida.'
+
+  const detalle = data.explicacion
+  const base = `${capitalizar(detalle.propiedad)} de ${detalle.elemento}: valor ingresado ${detalle.valor_ingresado} ${detalle.unidad}.`
+
+  if (data.resultado === 'cumple') {
+    return `${base} Cumple la norma ${detalle.norma_id}.`
+  }
+
+  const sugerencia = data.sugerencia
+  if (sugerencia?.accion === 'reducir_hasta') {
+    return `${base} No cumple. Debes reducir hasta ${sugerencia.objetivo} ${sugerencia.unidad}.`
+  }
+
+  if (sugerencia?.accion === 'aumentar_hasta') {
+    return `${base} No cumple. Debes aumentar hasta ${sugerencia.objetivo} ${sugerencia.unidad}.`
+  }
+
+  return `${base} No cumple la norma ${detalle.norma_id}.`
+}
+
 function App() {
   const [consulta, setConsulta] = useState('cual es el ancho minimo de puerta')
   const [respuestaNatural, setRespuestaNatural] = useState('')
@@ -13,6 +51,7 @@ function App() {
   const [valor, setValor] = useState('0.95')
   const [unidad, setUnidad] = useState('metros')
   const [resultadoVerificacion, setResultadoVerificacion] = useState(null)
+  const [mensajeVerificacion, setMensajeVerificacion] = useState('')
   const [cargandoVerificacion, setCargandoVerificacion] = useState(false)
 
   const consultarNatural = async (event) => {
@@ -41,9 +80,7 @@ function App() {
 
       const norma = data.items && data.items.length > 0 ? data.items[0] : null
       if (norma) {
-        setRespuestaNatural(
-          `La ${norma.propiedad} de ${norma.elemento} tiene una restriccion de tipo ${norma.restriccion} con valor ${norma.valor} ${norma.unidad}.`,
-        )
+        setRespuestaNatural(formatearNormaComoRespuesta(norma))
         setDetalleNatural(norma)
       } else {
         setRespuestaNatural('No se encontraron normas para la consulta ingresada.')
@@ -58,6 +95,7 @@ function App() {
   const verificarMedida = async (event) => {
     event.preventDefault()
     setCargandoVerificacion(true)
+    setMensajeVerificacion('')
     setResultadoVerificacion(null)
 
     try {
@@ -78,8 +116,11 @@ function App() {
       }
 
       setResultadoVerificacion(data)
+      setMensajeVerificacion(formatearVerificacion(data))
     } catch (error) {
-      setResultadoVerificacion({ error: error.message })
+      const errorData = { error: error.message }
+      setResultadoVerificacion(errorData)
+      setMensajeVerificacion(formatearVerificacion(errorData))
     } finally {
       setCargandoVerificacion(false)
     }
@@ -105,7 +146,10 @@ function App() {
         </form>
         {respuestaNatural ? <p className="result">{respuestaNatural}</p> : null}
         {detalleNatural ? (
-          <pre className="detail">{JSON.stringify(detalleNatural, null, 2)}</pre>
+          <details className="detail-block">
+            <summary>Ver detalle tecnico</summary>
+            <pre className="detail">{JSON.stringify(detalleNatural, null, 2)}</pre>
+          </details>
         ) : null}
       </section>
 
@@ -132,8 +176,12 @@ function App() {
             {cargandoVerificacion ? 'Verificando...' : 'Verificar'}
           </button>
         </form>
+        {mensajeVerificacion ? <p className="result">{mensajeVerificacion}</p> : null}
         {resultadoVerificacion ? (
-          <pre className="detail">{JSON.stringify(resultadoVerificacion, null, 2)}</pre>
+          <details className="detail-block">
+            <summary>Ver detalle tecnico</summary>
+            <pre className="detail">{JSON.stringify(resultadoVerificacion, null, 2)}</pre>
+          </details>
         ) : null}
       </section>
     </main>
