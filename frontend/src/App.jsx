@@ -433,14 +433,14 @@ function App() {
           {normasFiltradas.map((norma) => (
             <article key={norma.id} className="norma-card">
               <header>
-                <strong>{norma.id}</strong>
-                <span>{norma.categoria}</span>
+                <strong className="norma-id">{norma.id}</strong>
+                <span className="norma-category">{norma.categoria}</span>
               </header>
-              <p>
+              <p className="norma-main">
                 {norma.propiedad} {norma.restriccion} de {norma.elemento}: <strong>{norma.valor} {norma.unidad}</strong>
               </p>
-              <small>{norma.subcategoria} | {norma.jurisdiccion}</small>
-              {modoTecnico ? <small>Fuente: {norma.fuente}</small> : null}
+              <small className="norma-meta">{norma.subcategoria} | {norma.jurisdiccion}</small>
+              {modoTecnico ? <small className="norma-meta">Fuente: {norma.fuente}</small> : null}
             </article>
           ))}
         </div>

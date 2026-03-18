@@ -214,7 +214,7 @@ button.ghost {
   margin-top: 14px;
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 .norma-card {
@@ -224,18 +224,50 @@ button.ghost {
   background: #f8fafc;
   display: grid;
   gap: 8px;
+  overflow: hidden;
 }
 
 .norma-card header {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
+  display: grid;
+  gap: 6px;
+}
+
+.norma-id {
+  font-size: 1.05rem;
+  line-height: 1.15;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.norma-category {
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #1e293b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
 }
 
 .norma-card p {
   margin: 0;
 }
 
+.norma-main {
+  line-height: 1.4;
+}
+
+.norma-main strong {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
 .norma-card small {
   color: #475569;
+}
+
+.norma-meta {
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
